@@ -30,3 +30,5 @@
 .\objects\main.o: .\Library\misc.h
 .\objects\main.o: .\LCD\Lcd_Driver.h
 .\objects\main.o: .\LCD\GUI.h
+.\objects\main.o: .\Hardware\DWT.h
+.\objects\main.o: .\Hardware\DHT11.h

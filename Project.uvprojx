@@ -723,6 +723,26 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\DS1302.h</FilePath>
             </File>
+            <File>
+              <FileName>DWT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\DWT.c</FilePath>
+            </File>
+            <File>
+              <FileName>DWT.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\DWT.h</FilePath>
+            </File>
+            <File>
+              <FileName>DHT11.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\DHT11.c</FilePath>
+            </File>
+            <File>
+              <FileName>DHT11.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\DHT11.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

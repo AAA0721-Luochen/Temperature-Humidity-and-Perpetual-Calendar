@@ -21,3 +21,9 @@ void Gui_ShowHumidityIcon(uint8_t x, uint8_t y);
 /* 显示 Font.h 中的 32×32 日历和时钟图标。 */
 void Gui_ShowCalendarIcon(uint8_t x, uint8_t y);
 void Gui_ShowClockIcon(uint8_t x, uint8_t y);
+
+/* 在图标右侧显示 DHT11 数值，数字区域尺寸为 72×24。 */
+void Gui_ShowTemperatureValue(u16 x, u16 y, uint8_t integer,
+	uint8_t decimal, uint8_t negative, uint8_t valid);
+void Gui_ShowHumidityValue(u16 x, u16 y, uint8_t integer,
+	uint8_t decimal, uint8_t valid);

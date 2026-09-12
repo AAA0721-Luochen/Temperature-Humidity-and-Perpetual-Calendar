@@ -31,6 +31,8 @@
 ".\objects\timer.o"
 ".\objects\key.o"
 ".\objects\ds1302.o"
+".\objects\dwt.o"
+".\objects\dht11.o"
 ".\objects\gui.o"
 ".\objects\lcd_driver.o"
 --strict --scatter ".\Objects\Project.sct"

@@ -249,6 +249,147 @@ void Gui_DrawFont_Num32(u16 x, u16 y, u16 fc, u16 bc, u16 num)
 	}
 }
 
+#define GUI_SMALL_NUM_WIDTH       12U
+#define GUI_SMALL_NUM_HEIGHT      24U
+#define GUI_NUM32_SOURCE_SIZE     32U
+#define GUI_NUM32_GLYPH_BYTES     128U
+#define GUI_NUM_GLYPH_DOT         10U
+#define GUI_NUM_GLYPH_PERCENT     12U
+#define GUI_NUM_GLYPH_CELSIUS     13U
+#define GUI_NUM_GLYPH_MINUS       14U
+#define GUI_NUM_GLYPH_BLANK       0xFFU
+
+/* 读取 32×32 数字字模中的一个像素。 */
+static uint8_t Gui_Num32Pixel(uint8_t glyph, uint8_t x, uint8_t y)
+{
+	uint32_t offset;
+	uint8_t value;
+
+	offset = (uint32_t)glyph * GUI_NUM32_GLYPH_BYTES;
+	offset += (uint32_t)y * 4U + x / 8U;
+	value = sz32[offset];
+	return (uint8_t)((value & (uint8_t)(0x80U >> (x & 0x07U))) != 0U);
+}
+
+/*
+ * 将 32×32 字模压缩为 12×24。每个目标像素覆盖的源像素只要有一个
+ * 点亮就保留，可避免缩小后笔画断裂。
+ */
+static void Gui_DrawSmallNumberGlyph(u16 x, u16 y, uint8_t glyph, u16 fc, u16 bc)
+{
+	uint8_t dst_x;
+	uint8_t dst_y;
+	uint8_t src_x;
+	uint8_t src_y;
+	uint8_t src_x_begin;
+	uint8_t src_x_end;
+	uint8_t src_y_begin;
+	uint8_t src_y_end;
+	uint8_t pixel_on;
+
+	Lcd_SetRegion(x + 2U, y, x + GUI_SMALL_NUM_WIDTH - 1U,
+		y + GUI_SMALL_NUM_HEIGHT - 1U);
+
+	for (dst_y = 0U; dst_y < GUI_SMALL_NUM_HEIGHT; dst_y++)
+	{
+		src_y_begin = (uint8_t)((uint16_t)dst_y * GUI_NUM32_SOURCE_SIZE /
+			GUI_SMALL_NUM_HEIGHT);
+		src_y_end = (uint8_t)((uint16_t)(dst_y + 1U) * GUI_NUM32_SOURCE_SIZE /
+			GUI_SMALL_NUM_HEIGHT);
+
+		for (dst_x = 0U; dst_x < GUI_SMALL_NUM_WIDTH; dst_x++)
+		{
+			pixel_on = 0U;
+			if (glyph != GUI_NUM_GLYPH_BLANK)
+			{
+				src_x_begin = (uint8_t)((uint16_t)dst_x * GUI_NUM32_SOURCE_SIZE /
+					GUI_SMALL_NUM_WIDTH);
+				src_x_end = (uint8_t)((uint16_t)(dst_x + 1U) * GUI_NUM32_SOURCE_SIZE /
+					GUI_SMALL_NUM_WIDTH);
+
+				for (src_y = src_y_begin; src_y < src_y_end && pixel_on == 0U; src_y++)
+				{
+					for (src_x = src_x_begin; src_x < src_x_end; src_x++)
+					{
+						if (Gui_Num32Pixel(glyph, src_x, src_y) != 0U)
+						{
+							pixel_on = 1U;
+							break;
+						}
+					}
+				}
+			}
+
+			LCD_WriteData_16Bit(pixel_on != 0U ? fc : bc);
+		}
+	}
+}
+
+static void Gui_DrawSixGlyphs(u16 x, u16 y, const uint8_t glyphs[6])
+{
+	uint8_t index;
+
+	for (index = 0U; index < 6U; index++)
+	{
+		Gui_DrawSmallNumberGlyph(x + (uint16_t)index * GUI_SMALL_NUM_WIDTH,
+			y, glyphs[index], BLACK, WHITE);
+	}
+}
+
+void Gui_ShowTemperatureValue(u16 x, u16 y, uint8_t integer,
+	uint8_t decimal, uint8_t negative, uint8_t valid)
+{
+	uint8_t glyphs[6];
+
+	if (valid == 0U)
+	{
+		glyphs[0] = GUI_NUM_GLYPH_BLANK;
+		glyphs[1] = GUI_NUM_GLYPH_MINUS;
+		glyphs[2] = GUI_NUM_GLYPH_MINUS;
+		glyphs[3] = GUI_NUM_GLYPH_DOT;
+		glyphs[4] = GUI_NUM_GLYPH_MINUS;
+		glyphs[5] = GUI_NUM_GLYPH_CELSIUS;
+	}
+	else
+	{
+		glyphs[0] = negative != 0U ? GUI_NUM_GLYPH_MINUS : GUI_NUM_GLYPH_BLANK;
+		glyphs[1] = integer >= 10U ? (uint8_t)((integer / 10U) % 10U) : GUI_NUM_GLYPH_BLANK;
+		glyphs[2] = (uint8_t)(integer % 10U);
+		glyphs[3] = GUI_NUM_GLYPH_DOT;
+		glyphs[4] = (uint8_t)(decimal % 10U);
+		glyphs[5] = GUI_NUM_GLYPH_CELSIUS;
+	}
+
+	Gui_DrawSixGlyphs(x, y, glyphs);
+}
+
+void Gui_ShowHumidityValue(u16 x, u16 y, uint8_t integer,
+	uint8_t decimal, uint8_t valid)
+{
+	uint8_t glyphs[6];
+
+	if (valid == 0U)
+	{
+		glyphs[0] = GUI_NUM_GLYPH_BLANK;
+		glyphs[1] = GUI_NUM_GLYPH_MINUS;
+		glyphs[2] = GUI_NUM_GLYPH_MINUS;
+		glyphs[3] = GUI_NUM_GLYPH_DOT;
+		glyphs[4] = GUI_NUM_GLYPH_MINUS;
+		glyphs[5] = GUI_NUM_GLYPH_PERCENT;
+	}
+	else
+	{
+		glyphs[0] = integer >= 100U ? (uint8_t)((integer / 100U) % 10U) : GUI_NUM_GLYPH_BLANK;
+		glyphs[1] = integer >= 10U ? (uint8_t)((integer / 10U) % 10U) : GUI_NUM_GLYPH_BLANK;
+		glyphs[2] = (uint8_t)(integer % 10U);
+		glyphs[3] = GUI_NUM_GLYPH_DOT;
+		glyphs[4] = (uint8_t)(decimal % 10U);
+		glyphs[5] = GUI_NUM_GLYPH_PERCENT;
+	}
+
+	Gui_DrawSixGlyphs(x, y, glyphs);
+}
+
 
 /**************************************************************************************
 功能描述: 任意位置显示任意大小图片
