@@ -251,6 +251,7 @@ void Gui_DrawFont_Num32(u16 x, u16 y, u16 fc, u16 bc, u16 num)
 
 #define GUI_SMALL_NUM_WIDTH       12U
 #define GUI_SMALL_NUM_HEIGHT      24U
+#define GUI_FONT24_SOURCE_SIZE    24U
 #define GUI_NUM32_SOURCE_SIZE     32U
 #define GUI_NUM32_GLYPH_BYTES     128U
 #define GUI_NUM_GLYPH_DOT         10U
@@ -258,9 +259,44 @@ void Gui_DrawFont_Num32(u16 x, u16 y, u16 fc, u16 bc, u16 num)
 #define GUI_NUM_GLYPH_CELSIUS     13U
 #define GUI_NUM_GLYPH_MINUS       14U
 #define GUI_NUM_GLYPH_BLANK       0xFFU
+#define GUI_FONT24_DOT_INDEX      11U
+#define GUI_FONT24_CELSIUS_INDEX  12U
 
-/* 读取 32×32 数字字模中的一个像素。 */
-static uint8_t Gui_Num32Pixel(uint8_t glyph, uint8_t x, uint8_t y)
+/* 把显示用的数字编号转换为 Font_Data 中的字形编号。 */
+static uint8_t Gui_Font24Index(uint8_t glyph)
+{
+	if (glyph <= 9U)
+	{
+		return glyph == 0U ? 9U : (uint8_t)(glyph - 1U);
+	}
+	if (glyph == GUI_NUM_GLYPH_DOT)
+	{
+		return GUI_FONT24_DOT_INDEX;
+	}
+	if (glyph == GUI_NUM_GLYPH_CELSIUS)
+	{
+		return GUI_FONT24_CELSIUS_INDEX;
+	}
+	return GUI_NUM_GLYPH_BLANK;
+}
+
+/* 读取新加入的 24×24 字模中的一个像素。 */
+static uint8_t Gui_Font24Pixel(uint8_t glyph, uint8_t x, uint8_t y)
+{
+	uint8_t font_index = Gui_Font24Index(glyph);
+	uint8_t value;
+
+	if (font_index == GUI_NUM_GLYPH_BLANK)
+	{
+		return 0U;
+	}
+
+	value = Font_Data[font_index].dat[(uint16_t)y * 3U + x / 8U];
+	return (uint8_t)((value & (uint8_t)(0x80U >> (x & 0x07U))) != 0U);
+}
+
+/* 百分号和负号未包含在新字模中，继续从原字库读取。 */
+static uint8_t Gui_LegacySymbolPixel(uint8_t glyph, uint8_t x, uint8_t y)
 {
 	uint32_t offset;
 	uint8_t value;
@@ -272,8 +308,8 @@ static uint8_t Gui_Num32Pixel(uint8_t glyph, uint8_t x, uint8_t y)
 }
 
 /*
- * 将 32×32 字模压缩为 12×24。每个目标像素覆盖的源像素只要有一个
- * 点亮就保留，可避免缩小后笔画断裂。
+ * 新数字字模由 24×24 缩放为 12×24。每个目标像素覆盖的源像素只要
+ * 有一个点亮就保留，可避免缩小后笔画断裂。
  */
 static void Gui_DrawSmallNumberGlyph(u16 x, u16 y, uint8_t glyph, u16 fc, u16 bc)
 {
@@ -286,15 +322,20 @@ static void Gui_DrawSmallNumberGlyph(u16 x, u16 y, uint8_t glyph, u16 fc, u16 bc
 	uint8_t src_y_begin;
 	uint8_t src_y_end;
 	uint8_t pixel_on;
+	uint8_t source_size;
+	uint8_t use_font24;
+
+	use_font24 = (uint8_t)(Gui_Font24Index(glyph) != GUI_NUM_GLYPH_BLANK);
+	source_size = use_font24 != 0U ? GUI_FONT24_SOURCE_SIZE : GUI_NUM32_SOURCE_SIZE;
 
 	Lcd_SetRegion(x + 2U, y, x + GUI_SMALL_NUM_WIDTH - 1U,
 		y + GUI_SMALL_NUM_HEIGHT - 1U);
 
 	for (dst_y = 0U; dst_y < GUI_SMALL_NUM_HEIGHT; dst_y++)
 	{
-		src_y_begin = (uint8_t)((uint16_t)dst_y * GUI_NUM32_SOURCE_SIZE /
+		src_y_begin = (uint8_t)((uint16_t)dst_y * source_size /
 			GUI_SMALL_NUM_HEIGHT);
-		src_y_end = (uint8_t)((uint16_t)(dst_y + 1U) * GUI_NUM32_SOURCE_SIZE /
+		src_y_end = (uint8_t)((uint16_t)(dst_y + 1U) * source_size /
 			GUI_SMALL_NUM_HEIGHT);
 
 		for (dst_x = 0U; dst_x < GUI_SMALL_NUM_WIDTH; dst_x++)
@@ -302,16 +343,19 @@ static void Gui_DrawSmallNumberGlyph(u16 x, u16 y, uint8_t glyph, u16 fc, u16 bc
 			pixel_on = 0U;
 			if (glyph != GUI_NUM_GLYPH_BLANK)
 			{
-				src_x_begin = (uint8_t)((uint16_t)dst_x * GUI_NUM32_SOURCE_SIZE /
+				src_x_begin = (uint8_t)((uint16_t)dst_x * source_size /
 					GUI_SMALL_NUM_WIDTH);
-				src_x_end = (uint8_t)((uint16_t)(dst_x + 1U) * GUI_NUM32_SOURCE_SIZE /
+				src_x_end = (uint8_t)((uint16_t)(dst_x + 1U) * source_size /
 					GUI_SMALL_NUM_WIDTH);
 
 				for (src_y = src_y_begin; src_y < src_y_end && pixel_on == 0U; src_y++)
 				{
 					for (src_x = src_x_begin; src_x < src_x_end; src_x++)
 					{
-						if (Gui_Num32Pixel(glyph, src_x, src_y) != 0U)
+						if ((use_font24 != 0U &&
+							Gui_Font24Pixel(glyph, src_x, src_y) != 0U) ||
+							(use_font24 == 0U &&
+							Gui_LegacySymbolPixel(glyph, src_x, src_y) != 0U))
 						{
 							pixel_on = 1U;
 							break;

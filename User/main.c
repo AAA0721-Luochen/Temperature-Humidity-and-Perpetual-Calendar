@@ -28,9 +28,9 @@ int main(void)
 	Gui_ShowTemperatureValue(40, 84, 0, 0, 0, 0);
 	Gui_ShowHumidityValue(40, 124, 0, 0, 0);
 
-	/* DHT11 上电后至少等待 1 秒，采集间隔保持大于 2 秒。 */
+	/* DHT11 上电后等待 1 秒，此后每 1 秒采集一次。 */
 	DWT_DelayMs(1000U);
-	sample_interval_cycles = (SystemCoreClock / 1000U) * 2500U;
+	sample_interval_cycles = (SystemCoreClock / 1000U) * 1000U;
 	last_sample = DWT_GetTick() - sample_interval_cycles;
 
 	while(1)
