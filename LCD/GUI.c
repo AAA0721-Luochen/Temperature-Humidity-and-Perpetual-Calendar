@@ -422,3 +422,8 @@ void Gui_ShowUserImage(uint8_t x, uint8_t y)
 	Gui_showimage(IMG_DATA, IMG_WIDTH, IMG_HEIGHT, x, y);
 }
 
+/* 显示湿度图标。 */
+void Gui_ShowHumidityIcon(uint8_t x, uint8_t y)
+{
+	Gui_showimage(HUMIDITY_ICON_DATA, HUMIDITY_ICON_WIDTH, HUMIDITY_ICON_HEIGHT, x, y);
+}
