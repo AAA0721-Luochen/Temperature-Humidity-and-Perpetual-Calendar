@@ -749,7 +749,7 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 F (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)()
-F (.\User\main.c)(0x6AA4F03D)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\User\main.c)(0x6AA4F614)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\Start\stm32f10x.h)(0x6AA4E68D)
 I (.\Start\core_cm3.h)(0x4D523B58)
 I (D:\Application\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025237E)
@@ -779,8 +779,7 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 I (.\LCD\Lcd_Driver.h)(0x6AA4E672)
-I (.\LCD\GUI.h)(0x6AA4EA94)
-I (.\LCD\Picture.h)(0x6AA4E672)
+I (.\LCD\GUI.h)(0x6AA4F614)
 F (.\User\stm32f10x_conf.h)(0x4D99A59E)()
 F (.\User\stm32f10x_it.c)(0x4D99A59E)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\stm32f10x_it.o --omf_browse .\objects\stm32f10x_it.crf --depend .\objects\stm32f10x_it.d)
 I (User\stm32f10x_it.h)(0x4D99A59E)
@@ -877,8 +876,8 @@ F (.\Hardware\Key.c)(0x6AA4E1C6)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwor
 F (.\Hardware\Key.h)(0x6AA4E1D3)()
 F (.\Hardware\DS1302.c)(0x6AA4E391)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\ds1302.o --omf_browse .\objects\ds1302.crf --depend .\objects\ds1302.d)
 F (.\Hardware\DS1302.h)(0x6AA4E3C3)()
-F (.\LCD\Font.h)(0x6AA4F03D)()
-F (.\LCD\GUI.c)(0x6AA4F03D)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\gui.o --omf_browse .\objects\gui.crf --depend .\objects\gui.d)
+F (.\LCD\Font.h)(0x6AA4F614)()
+F (.\LCD\GUI.c)(0x6AA4F614)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\gui.o --omf_browse .\objects\gui.crf --depend .\objects\gui.d)
 I (.\Start\stm32f10x.h)(0x6AA4E68D)
 I (.\Start\core_cm3.h)(0x4D523B58)
 I (D:\Application\Keil_v5\ARM\ARMCC\include\stdint.h)(0x6025237E)
@@ -908,9 +907,9 @@ I (.\Library\stm32f10x_usart.h)(0x4D783BB4)
 I (.\Library\stm32f10x_wwdg.h)(0x4D783BB4)
 I (.\Library\misc.h)(0x4D783BB4)
 I (LCD\Lcd_Driver.h)(0x6AA4E672)
-I (LCD\GUI.h)(0x6AA4EA94)
-I (LCD\Font.h)(0x6AA4F03D)
-F (.\LCD\GUI.h)(0x6AA4EA94)()
+I (LCD\GUI.h)(0x6AA4F614)
+I (LCD\Font.h)(0x6AA4F614)
+F (.\LCD\GUI.h)(0x6AA4F614)()
 F (.\LCD\LCD_Config.h)(0x6AA4E317)()
 F (.\LCD\Lcd_Driver.c)(0x6AA4E672)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Start -I .\User -I .\Library -I .\Hardware -I .\System -I .\LCD-ID:\Application\Keil_v5\Keil\STM32F1xx_DFP\2.3.0\Device\Include-D__UVISION_VERSION="536" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\lcd_driver.o --omf_browse .\objects\lcd_driver.crf --depend .\objects\lcd_driver.d)
 I (.\Start\stm32f10x.h)(0x6AA4E68D)

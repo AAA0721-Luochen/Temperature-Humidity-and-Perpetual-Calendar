@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat Sep 12 14:26:00 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat Sep 12 14:50:08 2026
 <BR><P>
-<H3>Maximum Stack Usage =        108 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =         84 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-__rt_entry_main &rArr; main &rArr; Gui_ShowUserImage &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+__rt_entry_main &rArr; main &rArr; Gui_ShowTemperatureIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 <P>
 <H3>
 Functions with no stack information
@@ -190,8 +190,8 @@ Global Symbols
 <P><STRONG><a name="[81]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[42]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 108 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; Gui_ShowUserImage &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+<BR><BR>[Stack]<UL><LI>Max Depth = 84 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; Gui_ShowTemperatureIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
 <BR>[Calls]<UL><LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 <LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -421,48 +421,48 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_GPIO_Init
 </UL>
 
-<P><STRONG><a name="[4e]"></a>Gui_DrawFont_GBK16</STRONG> (Thumb, 394 bytes, Stack size 40 bytes, gui.o(i.Gui_DrawFont_GBK16))
-<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_DrawFont_GBK16 &rArr; Gui_DrawPoint &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+<P><STRONG><a name="[4e]"></a>Gui_ShowCalendarIcon</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowCalendarIcon))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_ShowCalendarIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_DrawPoint
+<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
 <BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[4f]"></a>Gui_DrawPoint</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, lcd_driver.o(i.Gui_DrawPoint))
-<BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = Gui_DrawPoint &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+<P><STRONG><a name="[50]"></a>Gui_ShowClockIcon</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowClockIcon))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_ShowClockIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
-<BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
-<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
+<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
-<BR>[Called By]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_DrawFont_GBK16
+<BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[52]"></a>Gui_ShowHumidityIcon</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowHumidityIcon))
+<P><STRONG><a name="[51]"></a>Gui_ShowHumidityIcon</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowHumidityIcon))
 <BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_ShowHumidityIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
-<BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
+<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
 <BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[54]"></a>Gui_ShowUserImage</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowUserImage))
-<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_ShowUserImage &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+<P><STRONG><a name="[52]"></a>Gui_ShowTemperatureIcon</STRONG> (Thumb, 22 bytes, Stack size 16 bytes, gui.o(i.Gui_ShowTemperatureIcon))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Gui_ShowTemperatureIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
-<BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
+<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
 <BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[53]"></a>Gui_showimage</STRONG> (Thumb, 76 bytes, Stack size 40 bytes, gui.o(i.Gui_showimage))
+<P><STRONG><a name="[4f]"></a>Gui_showimage</STRONG> (Thumb, 76 bytes, Stack size 40 bytes, gui.o(i.Gui_showimage))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
-<BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
-<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
+<BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowUserImage
-<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowHumidityIcon
-<LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowTemperatureIcon
+<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowHumidityIcon
+<LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowClockIcon
+<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowCalendarIcon
 </UL>
 
 <P><STRONG><a name="[5]"></a>HardFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.HardFault_Handler))
@@ -477,22 +477,21 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Init
 </UL>
 
-<P><STRONG><a name="[51]"></a>LCD_WriteData_16Bit</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, lcd_driver.o(i.LCD_WriteData_16Bit))
+<P><STRONG><a name="[54]"></a>LCD_WriteData_16Bit</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, lcd_driver.o(i.LCD_WriteData_16Bit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = LCD_WriteData_16Bit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_WriteData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_DrawPoint
+<BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Clear
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
 
 <P><STRONG><a name="[59]"></a>Lcd_Clear</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, lcd_driver.o(i.Lcd_Clear))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = Lcd_Clear &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteIndex
-<LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
-<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -517,15 +516,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Init
 </UL>
 
-<P><STRONG><a name="[50]"></a>Lcd_SetRegion</STRONG> (Thumb, 82 bytes, Stack size 20 bytes, lcd_driver.o(i.Lcd_SetRegion))
+<P><STRONG><a name="[53]"></a>Lcd_SetRegion</STRONG> (Thumb, 82 bytes, Stack size 20 bytes, lcd_driver.o(i.Lcd_SetRegion))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteIndex
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_DrawPoint
+<BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Clear
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
 </UL>
 
 <P><STRONG><a name="[5d]"></a>Lcd_WriteData</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, lcd_driver.o(i.Lcd_WriteData))
@@ -533,7 +531,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_WriteData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
+<BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Init
 </UL>
 
@@ -542,7 +540,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_WriteData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
+<BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_SetRegion
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Init
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Clear
 </UL>
@@ -563,7 +561,7 @@ Global Symbols
 <P><STRONG><a name="[58]"></a>SPI_WriteData</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, lcd_driver.o(i.SPI_WriteData))
 <BR><BR>[Called By]<UL><LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteIndex
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_WriteData
-<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_WriteData_16Bit
 </UL>
 
 <P><STRONG><a name="[9]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SVC_Handler))
@@ -582,15 +580,15 @@ Global Symbols
 <P><STRONG><a name="[8]"></a>UsageFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_it.o(i.UsageFault_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(RESET)
 </UL>
-<P><STRONG><a name="[43]"></a>main</STRONG> (Thumb, 84 bytes, Stack size 24 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = main &rArr; Gui_ShowUserImage &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
+<P><STRONG><a name="[43]"></a>main</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = main &rArr; Gui_ShowTemperatureIcon &rArr; Gui_showimage &rArr; Lcd_SetRegion &rArr; Lcd_WriteIndex
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Init
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Lcd_Clear
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_showimage
-<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowUserImage
-<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowHumidityIcon
-<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_DrawFont_GBK16
+<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowTemperatureIcon
+<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowHumidityIcon
+<LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowClockIcon
+<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gui_ShowCalendarIcon
 </UL>
 <BR>[Called By]<UL><LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>

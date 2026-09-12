@@ -30,4 +30,3 @@
 .\objects\main.o: .\Library\misc.h
 .\objects\main.o: .\LCD\Lcd_Driver.h
 .\objects\main.o: .\LCD\GUI.h
-.\objects\main.o: .\LCD\Picture.h

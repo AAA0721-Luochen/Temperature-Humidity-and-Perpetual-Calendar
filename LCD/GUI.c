@@ -221,152 +221,6 @@ void DisplayButtonUp(u16 x1,u16 y1,u16 x2,u16 y2)
 }
 
 /**************************************************************************************
-功能描述: 16*16汉字
-输    入: x、y为起点坐标，fc为文字颜色，bc为背景，s为字
-输    出: 无
-**************************************************************************************/
-
-void Gui_DrawFont_GBK16(u16 x, u16 y, u16 fc, u16 bc, u8 *s)
-{
-	unsigned char i,j;
-	unsigned short k,x0;
-	x0=x;
-
-	while(*s) 
-	{	
-		if((*s) < 128) 
-		{
-			k=*s;
-			if (k==13) 
-			{
-				x=x0;
-				y+=16;
-			}
-			else 
-			{
-				if (k>32) k-=32; else k=0;
-	
-			    for(i=0;i<16;i++)
-				for(j=0;j<8;j++) 
-					{
-				    	if(asc16[k*16+i]&(0x80>>j))	Gui_DrawPoint(x+j,y+i,fc);
-						else 
-						{
-							if (fc!=bc) Gui_DrawPoint(x+j,y+i,bc);
-						}
-					}
-				x+=8;
-			}
-			s++;
-		}
-			
-		else 
-		{
-		
-
-			for (k=0;k<hz16_num;k++) 
-			{
-			  if ((hz16[k].Index[0]==*(s))&&(hz16[k].Index[1]==*(s+1)))
-			  { 
-				    for(i=0;i<16;i++)
-				    {
-						for(j=0;j<8;j++) 
-							{
-						    	if(hz16[k].Msk[i*2]&(0x80>>j))	Gui_DrawPoint(x+j,y+i,fc);
-								else {
-									if (fc!=bc) Gui_DrawPoint(x+j,y+i,bc);
-								}
-							}
-						for(j=0;j<8;j++) 
-							{
-						    	if(hz16[k].Msk[i*2+1]&(0x80>>j))	Gui_DrawPoint(x+j+8,y+i,fc);
-								else 
-								{
-									if (fc!=bc) Gui_DrawPoint(x+j+8,y+i,bc);
-								}
-							}
-				    }
-				}
-			  }
-			s+=2;x+=16;
-		} 
-		
-	}
-}
-
-/**************************************************************************************
-功能描述: 24*24汉字
-输    入: x、y为起点坐标，fc为文字颜色，bc为背景，s为字
-输    出: 无
-**************************************************************************************/
-
-void Gui_DrawFont_GBK24(u16 x, u16 y, u16 fc, u16 bc, u8 *s)
-{
-	unsigned char i,j;
-	unsigned short k;
-
-	while(*s) 
-	{
-		if( *s < 0x80 ) 
-		{
-			k=*s;
-			if (k>32) k-=32; else k=0;
-
-		    for(i=0;i<16;i++)
-			for(j=0;j<8;j++) 
-				{
-			    	if(asc16[k*16+i]&(0x80>>j))	
-					Gui_DrawPoint(x+j,y+i,fc);
-					else 
-					{
-						if (fc!=bc) Gui_DrawPoint(x+j,y+i,bc);
-					}
-				}
-			s++;x+=8;
-		}
-		else 
-		{
-
-			for (k=0;k<hz24_num;k++) 
-			{
-			  if ((hz24[k].Index[0]==*(s))&&(hz24[k].Index[1]==*(s+1)))
-			  { 
-				    for(i=0;i<24;i++)
-				    {
-						for(j=0;j<8;j++) 
-							{
-						    	if(hz24[k].Msk[i*3]&(0x80>>j))
-								Gui_DrawPoint(x+j,y+i,fc);
-								else 
-								{
-									if (fc!=bc) Gui_DrawPoint(x+j,y+i,bc);
-								}
-							}
-						for(j=0;j<8;j++) 
-							{
-						    	if(hz24[k].Msk[i*3+1]&(0x80>>j))	Gui_DrawPoint(x+j+8,y+i,fc);
-								else {
-									if (fc!=bc) Gui_DrawPoint(x+j+8,y+i,bc);
-								}
-							}
-						for(j=0;j<8;j++) 
-							{
-						    	if(hz24[k].Msk[i*3+2]&(0x80>>j))	
-								Gui_DrawPoint(x+j+16,y+i,fc);
-								else 
-								{
-									if (fc!=bc) Gui_DrawPoint(x+j+16,y+i,bc);
-								}
-							}
-				    }
-			  }
-			}
-			s+=2;x+=24;
-		}
-	}
-}
-
-/**************************************************************************************
 功能描述: 数码管数字
 输    入: x、y为起点坐标，fc为文字颜色，bc为背景，s为数字
 输    出: 无
@@ -417,13 +271,25 @@ void Gui_showimage(const unsigned char *p, uint8_t c, uint8_t k, uint8_t x, uint
 
 
 /* Font.h 只在本文件中包含，避免主程序重复定义字库和图片数组。 */
-void Gui_ShowUserImage(uint8_t x, uint8_t y)
+void Gui_ShowTemperatureIcon(uint8_t x, uint8_t y)
 {
-	Gui_showimage(IMG_DATA, IMG_WIDTH, IMG_HEIGHT, x, y);
+	Gui_showimage(TEMPERATURE_ICON_DATA, TEMPERATURE_ICON_WIDTH, TEMPERATURE_ICON_HEIGHT, x, y);
 }
 
 /* 显示湿度图标。 */
 void Gui_ShowHumidityIcon(uint8_t x, uint8_t y)
 {
 	Gui_showimage(HUMIDITY_ICON_DATA, HUMIDITY_ICON_WIDTH, HUMIDITY_ICON_HEIGHT, x, y);
+}
+
+/* 显示日历图标。 */
+void Gui_ShowCalendarIcon(uint8_t x, uint8_t y)
+{
+	Gui_showimage(CALENDAR_ICON_DATA, CALENDAR_ICON_WIDTH, CALENDAR_ICON_HEIGHT, x, y);
+}
+
+/* 显示时钟图标。 */
+void Gui_ShowClockIcon(uint8_t x, uint8_t y)
+{
+	Gui_showimage(CLOCK_ICON_DATA, CLOCK_ICON_WIDTH, CLOCK_ICON_HEIGHT, x, y);
 }

@@ -1,20 +1,19 @@
 #include "stm32f10x.h"                  // Device header
 #include "Lcd_Driver.h"
 #include "GUI.h"
-#include "Picture.h"
 
 int main(void)
 {
-	u8 ch[] = "\xC4\xE3\xBA\xC3\xA3\xAC\xCA\xC0\xBD\xE7" /* GBK: 你好，世界 */;
-	
 	Lcd_Init();
 	LCD_LED_SET;
 	Lcd_Clear(WHITE);
 	
 
-	Gui_ShowUserImage(80, 20);	// 在右上区域显示温度图标
-	Gui_ShowHumidityIcon(80, 60);	// 在温度图标下方显示湿度图标
-	Gui_DrawFont_GBK16(1, 100, BLACK, WHITE, ch);
+	/* 四个图标左侧对齐，每个图标之间留 8 像素。 */
+	Gui_ShowCalendarIcon(0, 0);
+	Gui_ShowClockIcon(0, 40);
+	Gui_ShowTemperatureIcon(0, 80);
+	Gui_ShowHumidityIcon(0, 120);
 	while(1)
 	{
 		
