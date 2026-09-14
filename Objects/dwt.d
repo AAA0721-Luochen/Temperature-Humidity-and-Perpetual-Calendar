@@ -2,7 +2,7 @@
 .\objects\dwt.o: Hardware\DWT.h
 .\objects\dwt.o: .\Start\stm32f10x.h
 .\objects\dwt.o: .\Start\core_cm3.h
-.\objects\dwt.o: D:\Application\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\dwt.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\dwt.o: .\Start\system_stm32f10x.h
 .\objects\dwt.o: .\User\stm32f10x_conf.h
 .\objects\dwt.o: .\Library\stm32f10x_adc.h

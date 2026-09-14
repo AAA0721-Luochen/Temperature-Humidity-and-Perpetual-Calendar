@@ -1,7 +1,7 @@
 .\objects\gui.o: LCD\GUI.c
 .\objects\gui.o: .\Start\stm32f10x.h
 .\objects\gui.o: .\Start\core_cm3.h
-.\objects\gui.o: D:\Application\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\gui.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\gui.o: .\Start\system_stm32f10x.h
 .\objects\gui.o: .\User\stm32f10x_conf.h
 .\objects\gui.o: .\Library\stm32f10x_adc.h

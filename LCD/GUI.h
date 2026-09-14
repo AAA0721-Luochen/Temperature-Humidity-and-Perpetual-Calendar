@@ -27,3 +27,9 @@ void Gui_ShowTemperatureValue(u16 x, u16 y, uint8_t integer,
 	uint8_t decimal, uint8_t negative, uint8_t valid);
 void Gui_ShowHumidityValue(u16 x, u16 y, uint8_t integer,
 	uint8_t decimal, uint8_t valid);
+
+/* 在日历、时钟图标右侧显示紧凑日期和时间。 */
+void Gui_ShowCalendarValue(u16 x, u16 y, uint16_t year,
+	uint8_t month, uint8_t day, uint8_t valid);
+void Gui_ShowClockValue(u16 x, u16 y, uint8_t hour,
+	uint8_t minute, uint8_t second, uint8_t valid);

@@ -261,6 +261,17 @@ void Gui_DrawFont_Num32(u16 x, u16 y, u16 fc, u16 bc, u16 num)
 #define GUI_NUM_GLYPH_BLANK       0xFFU
 #define GUI_FONT24_DOT_INDEX      11U
 #define GUI_FONT24_CELSIUS_INDEX  12U
+#define GUI_FONT24_COLON_INDEX    10U
+#define GUI_FONT24_SLASH_INDEX    0xFDU
+#define GUI_FONT24_DASH_INDEX     0xFEU
+#define GUI_FONT24_BLANK_INDEX    0xFFU
+#define GUI_DATE_GLYPH_HEIGHT     24U
+#define GUI_DATE_GLYPH_COUNT      11U
+#define GUI_DATE_GLYPH_WIDTH      12U
+#define GUI_DATE_AREA_WIDTH       128U
+#define GUI_TIME_GLYPH_WIDTH      11U
+#define GUI_TIME_GLYPH_HEIGHT     24U
+#define GUI_TIME_GLYPH_COUNT      8U
 
 /* 把显示用的数字编号转换为 Font_Data 中的字形编号。 */
 static uint8_t Gui_Font24Index(uint8_t glyph)
@@ -293,6 +304,195 @@ static uint8_t Gui_Font24Pixel(uint8_t glyph, uint8_t x, uint8_t y)
 
 	value = Font_Data[font_index].dat[(uint16_t)y * 3U + x / 8U];
 	return (uint8_t)((value & (uint8_t)(0x80U >> (x & 0x07U))) != 0U);
+}
+
+static uint8_t Gui_DigitFont24Index(uint8_t digit)
+{
+	return digit == 0U ? 9U : (uint8_t)(digit - 1U);
+}
+
+static uint8_t Gui_Font24IndexPixel(uint8_t font_index, uint8_t x, uint8_t y)
+{
+	uint8_t value;
+
+	if (font_index == GUI_FONT24_BLANK_INDEX)
+	{
+		return 0U;
+	}
+	if (font_index == GUI_FONT24_DASH_INDEX)
+	{
+		return (uint8_t)(x >= 4U && x <= 19U && y >= 11U && y <= 13U);
+	}
+	if (font_index == GUI_FONT24_SLASH_INDEX)
+	{
+		return (uint8_t)((uint8_t)(x + y) >= 22U &&
+			(uint8_t)(x + y) <= 25U);
+	}
+
+	value = Font_Data[font_index].dat[(uint16_t)y * 3U + x / 8U];
+	return (uint8_t)((value & (uint8_t)(0x80U >> (x & 0x07U))) != 0U);
+}
+
+static void Gui_DrawScaledFont24Glyph(u16 x, u16 y, uint8_t font_index,
+	uint8_t width, uint8_t height)
+{
+	uint8_t dst_x;
+	uint8_t dst_y;
+	uint8_t src_x;
+	uint8_t src_y;
+	uint8_t src_x_begin;
+	uint8_t src_x_end;
+	uint8_t src_y_begin;
+	uint8_t src_y_end;
+	uint8_t pixel_on;
+
+	Lcd_SetRegion(x + 2U, y, x + width - 1U, y + height - 1U);
+	for (dst_y = 0U; dst_y < height; dst_y++)
+	{
+		src_y_begin = (uint8_t)((uint16_t)dst_y * 24U / height);
+		src_y_end = (uint8_t)((uint16_t)(dst_y + 1U) * 24U / height);
+		for (dst_x = 0U; dst_x < width; dst_x++)
+		{
+			src_x_begin = (uint8_t)((uint16_t)dst_x * 24U / width);
+			src_x_end = (uint8_t)((uint16_t)(dst_x + 1U) * 24U / width);
+			pixel_on = 0U;
+			for (src_y = src_y_begin; src_y < src_y_end && pixel_on == 0U; src_y++)
+			{
+				for (src_x = src_x_begin; src_x < src_x_end; src_x++)
+				{
+					if (Gui_Font24IndexPixel(font_index, src_x, src_y) != 0U)
+					{
+						pixel_on = 1U;
+						break;
+					}
+				}
+			}
+			LCD_WriteData_16Bit(pixel_on != 0U ? BLACK : WHITE);
+		}
+	}
+}
+
+void Gui_ShowCalendarValue(u16 x, u16 y, uint16_t year,
+	uint8_t month, uint8_t day, uint8_t valid)
+{
+	uint8_t glyphs[GUI_DATE_GLYPH_COUNT];
+	uint8_t index;
+	uint8_t position = 0U;
+	uint8_t glyph_width;
+	uint16_t cursor;
+	uint16_t content_width;
+	uint16_t clear_cursor = 0U;
+
+	for (index = 0U; index < GUI_DATE_GLYPH_COUNT; index++)
+	{
+		glyphs[index] = GUI_FONT24_BLANK_INDEX;
+	}
+
+	if (valid != 0U)
+	{
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 1000U) % 10U));
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 100U) % 10U));
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 10U) % 10U));
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)(year % 10U));
+		glyphs[position++] = GUI_FONT24_SLASH_INDEX;
+		if (month >= 10U)
+		{
+			glyphs[position++] = Gui_DigitFont24Index((uint8_t)(month / 10U));
+		}
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)(month % 10U));
+		glyphs[position++] = GUI_FONT24_SLASH_INDEX;
+		if (day >= 10U)
+		{
+			glyphs[position++] = Gui_DigitFont24Index((uint8_t)(day / 10U));
+		}
+		glyphs[position++] = Gui_DigitFont24Index((uint8_t)(day % 10U));
+	}
+	else
+	{
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_SLASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_SLASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+		glyphs[position++] = GUI_FONT24_DASH_INDEX;
+	}
+
+	content_width = (uint16_t)position * GUI_DATE_GLYPH_WIDTH;
+	cursor = (uint16_t)((GUI_DATE_AREA_WIDTH - content_width) / 2U);
+
+	/* 清除居中文本左侧，避免日期位数变化后残留旧像素。 */
+	while (clear_cursor < cursor)
+	{
+		glyph_width = (uint8_t)(cursor - clear_cursor);
+		if (glyph_width > GUI_DATE_GLYPH_WIDTH)
+		{
+			glyph_width = GUI_DATE_GLYPH_WIDTH;
+		}
+		Gui_DrawScaledFont24Glyph(x + clear_cursor, y,
+			GUI_FONT24_BLANK_INDEX, glyph_width, GUI_DATE_GLYPH_HEIGHT);
+		clear_cursor = (uint16_t)(clear_cursor + glyph_width);
+	}
+
+	for (index = 0U; index < position; index++)
+	{
+		glyph_width = GUI_DATE_GLYPH_WIDTH;
+		Gui_DrawScaledFont24Glyph(x + cursor, y, glyphs[index],
+			glyph_width, GUI_DATE_GLYPH_HEIGHT);
+		cursor = (uint16_t)(cursor + glyph_width);
+	}
+
+	/* 清除上一次较长日期可能留下的尾部像素。 */
+	while (cursor < GUI_DATE_AREA_WIDTH)
+	{
+		glyph_width = (uint8_t)(GUI_DATE_AREA_WIDTH - cursor);
+		if (glyph_width > GUI_DATE_GLYPH_WIDTH)
+		{
+			glyph_width = GUI_DATE_GLYPH_WIDTH;
+		}
+		Gui_DrawScaledFont24Glyph(x + cursor, y, GUI_FONT24_BLANK_INDEX,
+			glyph_width, GUI_DATE_GLYPH_HEIGHT);
+		cursor = (uint16_t)(cursor + glyph_width);
+	}
+}
+
+void Gui_ShowClockValue(u16 x, u16 y, uint8_t hour,
+	uint8_t minute, uint8_t second, uint8_t valid)
+{
+	uint8_t glyphs[GUI_TIME_GLYPH_COUNT];
+	uint8_t index;
+
+	if (valid != 0U)
+	{
+		glyphs[0] = Gui_DigitFont24Index((uint8_t)(hour / 10U));
+		glyphs[1] = Gui_DigitFont24Index((uint8_t)(hour % 10U));
+		glyphs[2] = GUI_FONT24_COLON_INDEX;
+		glyphs[3] = Gui_DigitFont24Index((uint8_t)(minute / 10U));
+		glyphs[4] = Gui_DigitFont24Index((uint8_t)(minute % 10U));
+		glyphs[5] = GUI_FONT24_COLON_INDEX;
+		glyphs[6] = Gui_DigitFont24Index((uint8_t)(second / 10U));
+		glyphs[7] = Gui_DigitFont24Index((uint8_t)(second % 10U));
+	}
+	else
+	{
+		glyphs[0] = GUI_FONT24_DASH_INDEX;
+		glyphs[1] = GUI_FONT24_DASH_INDEX;
+		glyphs[2] = GUI_FONT24_COLON_INDEX;
+		glyphs[3] = GUI_FONT24_DASH_INDEX;
+		glyphs[4] = GUI_FONT24_DASH_INDEX;
+		glyphs[5] = GUI_FONT24_COLON_INDEX;
+		glyphs[6] = GUI_FONT24_DASH_INDEX;
+		glyphs[7] = GUI_FONT24_DASH_INDEX;
+	}
+
+	for (index = 0U; index < GUI_TIME_GLYPH_COUNT; index++)
+	{
+		Gui_DrawScaledFont24Glyph(x + (uint16_t)index * GUI_TIME_GLYPH_WIDTH,
+			y, glyphs[index], GUI_TIME_GLYPH_WIDTH, GUI_TIME_GLYPH_HEIGHT);
+	}
 }
 
 /* 百分号和负号未包含在新字模中，继续从原字库读取。 */
