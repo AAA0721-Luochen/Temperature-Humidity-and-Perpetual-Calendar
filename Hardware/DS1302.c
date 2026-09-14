@@ -1,6 +1,7 @@
 #include "DS1302.h"
 #include "DWT.h"
 
+/* DS1302 寄存器命令：偶数地址写，奇数地址读。 */
 #define DS1302_WRITE_PROTECT_WRITE 0x8EU
 #define DS1302_TRICKLE_WRITE       0x90U
 #define DS1302_CLOCK_BURST_WRITE   0xBEU
@@ -8,6 +9,7 @@
 #define DS1302_RAM_WRITE_BASE      0xC0U
 #define DS1302_RAM_SIZE            31U
 
+/* 直接操作 BSRR/BRR 的 GPIO 宏用于产生三线通信时序。 */
 #define DS1302_RST_HIGH()  GPIO_SetBits(DS1302_GPIO_PORT, DS1302_RST_PIN)
 #define DS1302_RST_LOW()   GPIO_ResetBits(DS1302_GPIO_PORT, DS1302_RST_PIN)
 #define DS1302_CLK_HIGH()  GPIO_SetBits(DS1302_GPIO_PORT, DS1302_CLK_PIN)
@@ -40,6 +42,7 @@ static void DS1302_SetDataInput(void)
 
 static void DS1302_Begin(void)
 {
+	/* CE 上升沿开始一次命令；开始前保证 CLK 为低电平。 */
 	DS1302_SetDataOutput();
 	DS1302_DATA_LOW();
 	DS1302_CLK_LOW();
@@ -51,6 +54,7 @@ static void DS1302_Begin(void)
 
 static void DS1302_End(void)
 {
+	/* CE 拉低结束命令，并将总线恢复为低电平输出。 */
 	DS1302_RST_LOW();
 	DS1302_CLK_LOW();
 	DS1302_SetDataOutput();
@@ -117,6 +121,7 @@ static uint8_t DS1302_ReadByte(void)
 	uint8_t bit;
 	uint8_t value = 0U;
 
+	/* DS1302 同样按最低位在前的顺序输出数据。 */
 	for (bit = 0U; bit < 8U; bit++)
 	{
 		if (DS1302_DATA_READ() == Bit_SET)
@@ -156,6 +161,7 @@ static void DS1302_ReadClockBurst(uint8_t raw[8])
 {
 	uint8_t index;
 
+	/* 突发读取会获得同一时刻的完整日期时间，避免跨秒不一致。 */
 	DS1302_Begin();
 	DS1302_WriteReadCommand(DS1302_CLOCK_BURST_READ);
 	for (index = 0U; index < 8U; index++)
@@ -195,6 +201,7 @@ static uint8_t DS1302_IsValidBcd(uint8_t value)
 
 static uint8_t DS1302_DaysInMonth(uint16_t year, uint8_t month)
 {
+	/* DS1302 年份只保存两位，本工程限定在 2000~2099 年。 */
 	static const uint8_t days[12] =
 	{
 		31U, 28U, 31U, 30U, 31U, 30U,
@@ -263,6 +270,7 @@ ErrorStatus DS1302_ReadTime(DS1302_TimeTypeDef *time)
 	}
 
 	DS1302_ReadClockBurst(raw);
+	/* CH=1 表示晶振停止；同时拒绝保留位或 BCD 编码非法的数据。 */
 	if ((raw[0] & 0x80U) != 0U || (raw[1] & 0x80U) != 0U ||
 		(raw[2] & 0x40U) != 0U || (raw[3] & 0xC0U) != 0U ||
 		(raw[4] & 0xE0U) != 0U || (raw[5] & 0xF8U) != 0U ||
@@ -278,6 +286,7 @@ ErrorStatus DS1302_ReadTime(DS1302_TimeTypeDef *time)
 	time->second = DS1302_BcdToDecimal(raw[0] & 0x7FU);
 	time->minute = DS1302_BcdToDecimal(raw[1] & 0x7FU);
 
+	/* 兼容模块中已有的 12 小时制数据，对外统一转换为 24 小时制。 */
 	if ((raw[2] & 0x80U) != 0U)
 	{
 		raw_hour = (uint8_t)(raw[2] & 0x1FU);
@@ -332,6 +341,7 @@ ErrorStatus DS1302_SetTime(const DS1302_TimeTypeDef *time)
 	raw[6] = DS1302_DecimalToBcd((uint8_t)(time->year - 2000U));
 	raw[7] = 0x00U;
 
+	/* 写时间前解除保护，突发写完后立即恢复写保护。 */
 	DS1302_WriteRegister(DS1302_WRITE_PROTECT_WRITE, 0x00U);
 	DS1302_WriteClockBurst(raw);
 	DS1302_WriteRegister(DS1302_WRITE_PROTECT_WRITE, 0x80U);
@@ -362,6 +372,7 @@ ErrorStatus DS1302_WriteRamByte(uint8_t index, uint8_t value)
 		return ERROR;
 	}
 
+	/* RAM 与时钟寄存器共用 WP 写保护。 */
 	address = (uint8_t)(DS1302_RAM_WRITE_BASE + index * 2U);
 	DS1302_WriteRegister(DS1302_WRITE_PROTECT_WRITE, 0x00U);
 	DS1302_WriteRegister(address, value);

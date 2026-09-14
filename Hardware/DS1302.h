@@ -3,7 +3,11 @@
 
 #include "stm32f10x.h"
 
-/* DS1302 三线接口：RST/CE=PB7，DATA=PB8，CLK=PB9。 */
+/*
+ * DS1302 实时时钟驱动
+ * 三线接口使用 GPIO 模拟：RST/CE=PB7，DATA=PB8，CLK=PB9。
+ * DATA 是双向数据线，驱动会在发送命令和读取数据之间切换 GPIO 方向。
+ */
 #define DS1302_GPIO_PORT       GPIOB
 #define DS1302_GPIO_CLK        RCC_APB2Periph_GPIOB
 #define DS1302_RST_PIN         GPIO_Pin_7
@@ -12,13 +16,13 @@
 
 typedef struct
 {
-	uint16_t year;
-	uint8_t month;
-	uint8_t day;
-	uint8_t week;
-	uint8_t hour;
-	uint8_t minute;
-	uint8_t second;
+	uint16_t year;  /* 2000~2099 */
+	uint8_t month;  /* 1~12 */
+	uint8_t day;    /* 1~31，受月份和闰年限制 */
+	uint8_t week;   /* 1~7，本工程约定 1 为星期一 */
+	uint8_t hour;   /* 0~23 */
+	uint8_t minute; /* 0~59 */
+	uint8_t second; /* 0~59 */
 } DS1302_TimeTypeDef;
 
 /* 初始化 GPIO，并关闭针对不可充电 CR2032 的涓流充电。不会重写时间。 */

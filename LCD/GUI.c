@@ -265,6 +265,8 @@ void Gui_DrawFont_Num32(u16 x, u16 y, u16 fc, u16 bc, u16 num)
 #define GUI_FONT24_SLASH_INDEX    0xFDU
 #define GUI_FONT24_DASH_INDEX     0xFEU
 #define GUI_FONT24_BLANK_INDEX    0xFFU
+
+/* 日期和时间均使用 24 像素高字形；日期按实际字符宽度动态居中。 */
 #define GUI_DATE_GLYPH_HEIGHT     24U
 #define GUI_DATE_GLYPH_COUNT      11U
 #define GUI_DATE_GLYPH_WIDTH      12U
@@ -308,6 +310,7 @@ static uint8_t Gui_Font24Pixel(uint8_t glyph, uint8_t x, uint8_t y)
 
 static uint8_t Gui_DigitFont24Index(uint8_t digit)
 {
+	/* Font_Data 的排列顺序为 1~9、0，因此需要转换数字到数组下标。 */
 	return digit == 0U ? 9U : (uint8_t)(digit - 1U);
 }
 
@@ -336,6 +339,10 @@ static uint8_t Gui_Font24IndexPixel(uint8_t font_index, uint8_t x, uint8_t y)
 static void Gui_DrawScaledFont24Glyph(u16 x, u16 y, uint8_t font_index,
 	uint8_t width, uint8_t height)
 {
+	/*
+	 * 每个目标像素覆盖的源像素中只要有一点点亮就保留，
+	 * 可在缩小 24×24 字模时尽量避免细笔画断裂。
+	 */
 	uint8_t dst_x;
 	uint8_t dst_y;
 	uint8_t src_x;
@@ -390,6 +397,7 @@ void Gui_ShowCalendarValue(u16 x, u16 y, uint16_t year,
 
 	if (valid != 0U)
 	{
+		/* 依次组成 YYYY/M/D，月份和日期不强制补零。 */
 		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 1000U) % 10U));
 		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 100U) % 10U));
 		glyphs[position++] = Gui_DigitFont24Index((uint8_t)((year / 10U) % 10U));
@@ -421,6 +429,7 @@ void Gui_ShowCalendarValue(u16 x, u16 y, uint16_t year,
 		glyphs[position++] = GUI_FONT24_DASH_INDEX;
 	}
 
+	/* 根据本次实际字符数量计算左右留白，使日期水平居中。 */
 	content_width = (uint16_t)position * GUI_DATE_GLYPH_WIDTH;
 	cursor = (uint16_t)((GUI_DATE_AREA_WIDTH - content_width) / 2U);
 
@@ -467,6 +476,7 @@ void Gui_ShowClockValue(u16 x, u16 y, uint8_t hour,
 
 	if (valid != 0U)
 	{
+		/* 时间固定补零为 HH:MM:SS，共八个字形。 */
 		glyphs[0] = Gui_DigitFont24Index((uint8_t)(hour / 10U));
 		glyphs[1] = Gui_DigitFont24Index((uint8_t)(hour % 10U));
 		glyphs[2] = GUI_FONT24_COLON_INDEX;

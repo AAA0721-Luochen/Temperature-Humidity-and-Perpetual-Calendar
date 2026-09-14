@@ -1,6 +1,4 @@
-
-
-
+/* TFT 图形、图标以及传感器/时钟数据显示接口。 */
 u16 LCD_BGR2RGB(u16 c);
 void Gui_Circle(u16 X,u16 Y,u16 R,u16 fc); 
 void Gui_DrawLine(u16 x0, u16 y0,u16 x1, u16 y1,u16 Color);  
@@ -28,7 +26,7 @@ void Gui_ShowTemperatureValue(u16 x, u16 y, uint8_t integer,
 void Gui_ShowHumidityValue(u16 x, u16 y, uint8_t integer,
 	uint8_t decimal, uint8_t valid);
 
-/* 在日历、时钟图标右侧显示紧凑日期和时间。 */
+/* 显示 YYYY/M/D 日期和 HH:MM:SS 时间；valid=0 时显示占位符。 */
 void Gui_ShowCalendarValue(u16 x, u16 y, uint16_t year,
 	uint8_t month, uint8_t day, uint8_t valid);
 void Gui_ShowClockValue(u16 x, u16 y, uint8_t hour,

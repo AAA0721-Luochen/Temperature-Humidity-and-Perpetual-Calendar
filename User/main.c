@@ -1,3 +1,9 @@
+/*
+ * STM32F103C8T6 桌面环境显示程序
+ *
+ * DS1302 提供日期和时间，DHT11 提供温湿度，1.8 英寸 TFT 负责显示。
+ * 界面自上而下依次为日期、时间、温度和湿度。
+ */
 #include "stm32f10x.h"                  // Device header
 #include "Lcd_Driver.h"
 #include "GUI.h"
@@ -5,8 +11,15 @@
 #include "DHT11.h"
 #include "DS1302.h"
 
+/* 日期占满 128 像素宽度并由 GUI 居中；时间宽 88 像素，起点 20 可居中。 */
 #define RTC_DATE_VALUE_X 0U
 #define RTC_TIME_VALUE_X 20U
+
+/*
+ * 使用 DS1302 最后两个 RAM 字节记录校准版本。
+ * 修改默认校准时间时同步修改 VERSION，可使新固件只校准一次，
+ * 后续复位仍继续使用纽扣电池保存的时间。
+ */
 #define RTC_CALIBRATION_SIGNATURE_INDEX 29U
 #define RTC_CALIBRATION_VERSION_INDEX   30U
 #define RTC_CALIBRATION_SIGNATURE       0xD2U
@@ -16,11 +29,16 @@ int main(void)
 {
 	const DS1302_TimeTypeDef initial_rtc_time =
 	{
-		2026U, 9U, 14U, 1U, 16U, 51U, 0U
+		2026U, 9U, 14U, 1U,  /* 年、月、日、星期一 */
+		16U, 51U, 0U          /* 时、分、秒 */
 	};
+
+	/* 传感器数据及最近一次成功显示的 RTC 数据。 */
 	DHT11_DataTypeDef dht11_data;
 	DS1302_TimeTypeDef rtc_time;
 	DS1302_TimeTypeDef displayed_rtc_time;
+
+	/* DWT 周期计数器用于实现互不阻塞的周期任务。 */
 	uint32_t last_sample;
 	uint32_t sample_interval_cycles;
 	uint32_t last_rtc_sample;
@@ -32,6 +50,7 @@ int main(void)
 	uint8_t calibration_version;
 	ErrorStatus read_status;
 
+	/* DS1302 驱动使用 DWT 微秒延时，因此 DWT 必须最先初始化。 */
 	DWT_Init();
 	DS1302_Init();
 	/* 新校准版本只写入一次，后续复位继续使用电池保存的走时。 */
@@ -75,6 +94,7 @@ int main(void)
 
 	while(1)
 	{
+		/* 每 200ms 读取一次一致的 RTC 快照，数值变化后才刷新屏幕。 */
 		if ((uint32_t)(DWT_GetTick() - last_rtc_sample) >= rtc_sample_interval_cycles)
 		{
 			last_rtc_sample = DWT_GetTick();
@@ -107,6 +127,7 @@ int main(void)
 			}
 		}
 
+		/* DHT11 采集与显示任务。读取失败时显示占位符。 */
 		if ((uint32_t)(DWT_GetTick() - last_sample) >= sample_interval_cycles)
 		{
 			last_sample = DWT_GetTick();
